@@ -36,6 +36,12 @@ class ManufacturerListView(LoginRequiredMixin, generic.ListView):
     template_name = "taxi/manufacturer_list.html"
     paginate_by = 5
 
+    def get_queryset(self):
+        query = self.request.GET.get("q")
+        if query:
+            return Manufacturer.objects.filter(name__icontains=query)
+        return super().get_queryset()
+
 
 class ManufacturerCreateView(LoginRequiredMixin, generic.CreateView):
     model = Manufacturer
@@ -58,6 +64,12 @@ class CarListView(LoginRequiredMixin, generic.ListView):
     model = Car
     paginate_by = 5
     queryset = Car.objects.select_related("manufacturer")
+
+    def get_queryset(self):
+        query = self.request.GET.get("q")
+        if query:
+            return self.queryset.filter(model__icontains=query)
+        return self.queryset
 
 
 class CarDetailView(LoginRequiredMixin, generic.DetailView):
@@ -84,6 +96,12 @@ class CarDeleteView(LoginRequiredMixin, generic.DeleteView):
 class DriverListView(LoginRequiredMixin, generic.ListView):
     model = Driver
     paginate_by = 5
+
+    def get_queryset(self):
+        query = self.request.GET.get("q")
+        if query:
+            return Driver.objects.filter(username__icontains=query)
+        return super().get_queryset()
 
 
 class DriverDetailView(LoginRequiredMixin, generic.DetailView):
@@ -117,3 +135,8 @@ def toggle_assign_to_car(request, pk):
     else:
         driver.cars.add(pk)
     return HttpResponseRedirect(reverse_lazy("taxi:car-detail", args=[pk]))
+
+
+
+
+
