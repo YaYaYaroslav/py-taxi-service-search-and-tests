@@ -10,11 +10,8 @@ class SearchTests(TestCase):
             password="password123"
         )
 
-        self.car = Car.objects.create(model="Toyota")
-        self.manufacturer = Manufacturer.objects.create(
-            name="Toyota",
-            country="Japan"
-        )
+        self.manufacturer = Manufacturer.objects.create(name="Toyota Manufacturer")
+        self.car = Car.objects.create(model="Toyota", manufacturer=self.manufacturer)
 
     def test_driver_search(self):
         response = (
